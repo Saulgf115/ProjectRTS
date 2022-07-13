@@ -11,7 +11,7 @@ public class Unit : MonoBehaviour
     [SerializeField] float moveSpeed = 4.0f;
     [SerializeField] float stoppingDistance = 0.1f;
     [SerializeField] float rotateSpeed = 10.0f;
-    //Animator animator;
+    [SerializeField] Animator animator;
 
 
 
@@ -25,7 +25,7 @@ public class Unit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //animator = GetComponent<Animator>();
+        
     }
 
     // Update is called once per frame
@@ -37,13 +37,19 @@ public class Unit : MonoBehaviour
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
 
             transform.forward = Vector3.Lerp(transform.forward, moveDirection, rotateSpeed * Time.deltaTime);
+
+            animator.SetBool("IsWalking",true);
         }
-
-
-        if(Input.GetMouseButtonDown(0))
+        else
         {
-            Move(MouseWorld.GetWorldPosition());
+            animator.SetBool("IsWalking",false);
         }
+
+
+        //if(Input.GetMouseButtonDown(0))
+        //{
+        //    Move(MouseWorld.GetWorldPosition());
+        //}
 
     }
 
