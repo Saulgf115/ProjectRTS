@@ -15,6 +15,9 @@ public class Unit : MonoBehaviour
 
 
 
+    GridPosition gridPosition;
+
+
     private void Awake()
     {
         instance = this;
@@ -25,7 +28,9 @@ public class Unit : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+         gridPosition = LevelGrid.instance.GetGridPosition(transform.position);
+
+        LevelGrid.instance.AddUnitAtGridPosition(gridPosition,this);
     }
 
     // Update is called once per frame
@@ -50,7 +55,14 @@ public class Unit : MonoBehaviour
         //{
         //    Move(MouseWorld.GetWorldPosition());
         //}
+        GridPosition newGridPosition = LevelGrid.instance.GetGridPosition(transform.position);
 
+        if(newGridPosition != gridPosition)
+        {
+            //unit changed grid Position
+            LevelGrid.instance.UnitMoveGridPosition(this,gridPosition,newGridPosition);
+            gridPosition = newGridPosition;
+        }
     }
 
 
