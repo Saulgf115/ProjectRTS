@@ -6,71 +6,72 @@ using UnityEngine;
 public class UnitActionSystem : MonoBehaviour
 {
 
-    public event EventHandler OnSelectedUnitChanged;
-
+    [Header("Unit Action System Stats")]
     [SerializeField] Unit selectedUnit;
-
     [SerializeField] LayerMask unitLayerMask;
 
-    public static UnitActionSystem instance { get; private set; }
+    public event EventHandler OnSelectedUnitChanged; 
 
+    public static UnitActionSystem instance { get;  private set; }
 
     private void Awake()
     {
         if(instance != null)
         {
-            Debug.LogError("There is more than one Unit Action System " + transform + " - " + instance);
-            Destroy(this.gameObject);
+            Destroy(gameObject);
             return;
         }
+
 
 
         instance = this;
     }
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
     // Update is called once per frame
     void Update()
     {
+
+        if(TryHandleUnitSelection())
+        {
+            return;
+        }
+
+
         if(Input.GetMouseButtonDown(0))
         {
+
             if (TryHandleUnitSelection()) return;
 
-            selectedUnit.Move(MouseWorld.GetWorldPosition());
+            selectedUnit.Move(MouseWorld.GetPosition());
         }
     }
 
     bool TryHandleUnitSelection()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
         RaycastHit hit;
 
-        if(Physics.Raycast(ray,out hit,float.MaxValue,instance.unitLayerMask))
+        if(Physics.Raycast(ray,out hit,float.MaxValue,unitLayerMask))
         {
             if(hit.transform.TryGetComponent<Unit>(out Unit unit))
             {
-                SelectedUnit(unit);
-
+                SetSelectedUnit(unit);
                 return true;
             }
         }
 
 
         return false;
-
     }
 
 
-    public void SelectedUnit(Unit unit)
+
+    public void SetSelectedUnit(Unit unit)
     {
         selectedUnit = unit;
 
-        OnSelectedUnitChanged?.Invoke(this, EventArgs.Empty);
+        OnSelectedUnitChanged?.Invoke(this,EventArgs.Empty);
     }
 
 
@@ -79,3 +80,6 @@ public class UnitActionSystem : MonoBehaviour
         return selectedUnit;
     }
 }
+
+
+
